@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morecar Estética Automotiva — Agendamento online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F2C4C;
+  --navy-deep:#081C33;
+  --azul:#1D6FC0;
+  --azul-claro:#E7F0FA;
+  --gelo:#EDF1F5;
+  --branco:#fff;
+  --aco:#66788C;
+  --linha:#D7DFE7;
+  --ok:#17794C;
+  --ok-bg:#E4F3EB;
+  --alerta:#B23A16;
+  --alerta-bg:#FBE9E2;
+  --sombra:0 1px 2px rgba(15,44,76,.06), 0 8px 24px rgba(15,44,76,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--gelo);
+  color:var(--navy);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Archivo',sans-serif;margin:0;letter-spacing:-.015em}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select{font-family:inherit;font-size:15px}
+:focus-visible{outline:2px solid var(--azul);outline-offset:2px;border-radius:4px}
+
+.aviso{
+  background:var(--navy-deep);color:#9FC3E8;font-size:12.5px;
+  text-align:center;padding:7px 16px;letter-spacing:.01em;
+}
+.aviso b{color:#fff;font-weight:600}
+
+.barra{
+  background:var(--navy);color:#fff;position:sticky;top:0;z-index:50;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.barra-in{
+  max-width:1080px;margin:0 auto;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.marca{display:flex;align-items:center;gap:10px}
+.marca svg{display:block}
+.marca-txt{font-family:'Archivo';font-weight:700;font-size:15px;line-height:1.1}
+.marca-txt span{display:block;font-family:'Inter';font-weight:400;font-size:11px;color:#8FB4DA;letter-spacing:.06em}
+
+.abas{display:flex;background:rgba(255,255,255,.08);border-radius:9px;padding:3px;gap:2px}
+.abas button{
+  padding:7px 14px;border-radius:7px;font-size:13.5px;font-weight:500;color:#B9D2EC;white-space:nowrap;
+}
+.abas button.on{background:#fff;color:var(--navy);font-weight:600}
+
+main{max-width:1080px;margin:0 auto;padding:20px 16px 72px}
+.vista{display:none}
+.vista.on{display:block}
+
+.hero{
+  background:linear-gradient(155deg,#123A63 0%,#081C33 100%);
+  border-radius:16px;padding:26px 22px 74px;color:#fff;position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;right:-60px;top:-70px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(120,190,255,.28),transparent 62%);
+}
+.hero h1{font-size:27px;font-weight:800;line-height:1.15;max-width:15ch;position:relative}
+.hero p{margin:10px 0 0;color:#A9C8E6;font-size:14px;max-width:34ch;position:relative}
+.hero-meta{
+  margin-top:16px;display:flex;gap:18px;font-size:12.5px;color:#8FB4DA;position:relative;flex-wrap:wrap;
+}
+.hero-meta b{color:#fff;font-weight:600;display:block;font-size:13.5px}
+
+.cartao{
+  background:var(--branco);border-radius:14px;box-shadow:var(--sombra);padding:20px;
+}
+.puxado{margin-top:-56px;position:relative;z-index:2}
+
+.passo{margin-bottom:22px}
+.passo:last-child{margin-bottom:0}
+.passo h3{font-size:16px;font-weight:700;margin-bottom:3px}
+.passo p.ajuda{margin:0 0 12px;color:var(--aco);font-size:13px}
+
+.servicos{display:grid;gap:8px}
+.serv{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  border:1.5px solid var(--linha);border-radius:11px;padding:12px 13px;background:#fff;
+  transition:border-color .12s,background .12s;
+}
+.serv:hover{border-color:#AFC4D6}
+.serv.on{border-color:var(--azul);background:var(--azul-claro)}
+.serv-ico{
+  width:38px;height:38px;border-radius:9px;background:var(--azul-claro);
+  display:grid;place-items:center;flex:none;color:var(--azul);
+}
+.serv.on .serv-ico{background:var(--azul);color:#fff}
+.serv-nome{font-weight:600;font-size:14.5px}
+.serv-desc{font-size:12.5px;color:var(--aco);margin-top:1px}
+.serv-preco{margin-left:auto;text-align:right;flex:none}
+.serv-preco b{font-family:'Archivo';font-size:15px;font-weight:700;display:block}
+.serv-preco span{font-size:11.5px;color:var(--aco)}
+
+.dias{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.dia{
+  flex:none;width:58px;border:1.5px solid var(--linha);border-radius:11px;padding:9px 0;text-align:center;background:#fff;
+}
+.dia small{display:block;font-size:11px;color:var(--aco);text-transform:lowercase}
+.dia b{display:block;font-family:'Archivo';font-size:19px;font-weight:700;line-height:1.2}
+.dia i{display:block;font-size:10.5px;color:var(--aco);font-style:normal}
+.dia.on{border-color:var(--azul);background:var(--azul);color:#fff}
+.dia.on small,.dia.on i{color:#C5DDF5}
+.dia:disabled{opacity:.35;cursor:not-allowed}
+
+.horarios{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.hr{
+  border:1.5px solid var(--linha);border-radius:9px;padding:10px 0;text-align:center;
+  font-weight:600;font-size:14px;background:#fff;
+}
+.hr.on{border-color:var(--azul);background:var(--azul);color:#fff}
+.hr:disabled{background:#F4F6F8;color:#B0BDC9;border-color:#E5EAEF;cursor:not-allowed;text-decoration:line-through}
+
+.campo{margin-bottom:12px}
+.campo label{display:block;font-size:13px;font-weight:500;margin-bottom:5px}
+.campo input,.campo select{
+  width:100%;border:1.5px solid var(--linha);border-radius:9px;padding:11px 12px;background:#fff;color:var(--navy);
+}
+.campo input:focus,.campo select:focus{border-color:var(--azul);outline:none}
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.resumo{
+  background:var(--azul-claro);border-radius:11px;padding:14px;margin:18px 0 14px;font-size:13.5px;
+}
+.resumo-l{display:flex;justify-content:space-between;padding:3px 0;color:#2C5C89}
+.resumo-l b{color:var(--navy);font-weight:600}
+.resumo-total{border-top:1px solid #C9DDF0;margin-top:8px;padding-top:9px;font-size:15px}
+.resumo-total b{font-family:'Archivo';font-size:18px;font-weight:700}
+
+.btn{
+  display:block;width:100%;background:var(--navy);color:#fff;border-radius:10px;
+  padding:14px;font-weight:600;font-size:15px;text-align:center;transition:background .12s;
+}
+.btn:hover{background:#164374}
+.btn:disabled{background:#C3CDD7;cursor:not-allowed}
+.btn-2{background:#fff;color:var(--navy);border:1.5px solid var(--linha)}
+.btn-2:hover{background:#F5F8FA}
+.btn-p{padding:8px 13px;width:auto;display:inline-block;font-size:13px;border-radius:8px}
+.btn-zap{background:#128C4A;color:#fff}
+.btn-zap:hover{background:#0F7540}
+.btn-perigo{color:var(--alerta);border-color:#EBCFC5;background:#fff}
+.btn-perigo:hover{background:var(--alerta-bg)}
+
+.confirmado{text-align:center;padding:14px 4px 6px}
+.selo{width:56px;height:56px;border-radius:50%;background:var(--ok-bg);color:var(--ok);display:grid;place-items:center;margin:0 auto 14px}
+.confirmado h2{font-size:21px;font-weight:700}
+.confirmado>p{color:var(--aco);margin:6px 0 18px;font-size:14px}
+.protocolo{
+  display:inline-block;font-family:'Archivo';font-weight:700;letter-spacing:.08em;font-size:13px;
+  background:var(--gelo);padding:6px 12px;border-radius:7px;margin-bottom:18px;
+}
+.zap{
+  background:#E9F5EC;border:1px solid #C9E5D3;border-radius:12px;padding:13px;text-align:left;margin-bottom:16px;
+}
+.zap-cab{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#0F7540;font-weight:600;margin-bottom:9px}
+.balao{
+  background:#fff;border-radius:9px;border-top-left-radius:2px;padding:11px 13px;font-size:13.5px;line-height:1.55;
+  box-shadow:0 1px 2px rgba(0,0,0,.07);white-space:pre-line;
+}
+
+.painel-topo{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.painel-topo h2{font-size:22px;font-weight:700}
+.painel-topo p{margin:2px 0 0;color:var(--aco);font-size:13.5px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:12px;padding:14px;box-shadow:var(--sombra)}
+.kpi b{display:block;font-family:'Archivo';font-size:24px;font-weight:700;line-height:1.1}
+.kpi span{font-size:12.5px;color:var(--aco)}
+
+.agenda{background:#fff;border-radius:14px;box-shadow:var(--sombra);overflow:hidden}
+.agenda-cab{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;border-bottom:1px solid var(--linha);flex-wrap:wrap;
+}
+.agenda-cab h3{font-size:16px;font-weight:700}
+.linha-ag{display:flex;gap:13px;padding:14px 16px;border-bottom:1px solid #EDF1F5;align-items:flex-start}
+.linha-ag:last-child{border-bottom:0}
+.linha-ag.livre{background:#FBFCFD}
+.hora-ag{
+  font-family:'Archivo';font-weight:700;font-size:15px;width:52px;flex:none;padding-top:1px;
+}
+.hora-ag small{display:block;font-family:'Inter';font-weight:400;font-size:11px;color:var(--aco)}
+.corpo-ag{flex:1;min-width:0}
+.cliente-ag{font-weight:600;font-size:14.5px}
+.detalhe-ag{font-size:13px;color:var(--aco);margin-top:2px}
+.acoes-ag{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tag{
+  font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;display:inline-block;margin-left:8px;
+  vertical-align:1px;
+}
+.t-conf{background:var(--azul-claro);color:#1B5E9E}
+.t-feito{background:var(--ok-bg);color:var(--ok)}
+.t-bloq{background:#F0F1F3;color:#5D6A78}
+.vazio{padding:34px 16px;text-align:center;color:var(--aco);font-size:14px}
+
+.modal-fundo{
+  position:fixed;inset:0;background:rgba(8,28,51,.55);display:none;place-items:center;padding:16px;z-index:100;
+}
+.modal-fundo.on{display:grid}
+.modal{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:420px;max-height:88vh;overflow:auto}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal>p{color:var(--aco);font-size:13.5px;margin:0 0 16px}
+.modal-acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+
+.planilha-nota{
+  background:#fff;border-radius:12px;padding:16px;box-shadow:var(--sombra);margin-bottom:14px;font-size:13.5px;color:#3D566F;
+}
+.planilha-nota h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.planilha{background:#fff;border-radius:12px;box-shadow:var(--sombra);overflow:hidden}
+.planilha-cab{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--linha)}
+.planilha-cab b{font-size:14px;font-weight:600}
+.planilha-cab span{font-size:11.5px;color:var(--aco)}
+.rolagem{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{border:1px solid #E3E8ED;padding:7px 10px;text-align:left;white-space:nowrap}
+thead th{background:#F5F7F9;font-weight:600;font-size:11.5px;color:#5D6A78;position:sticky;top:0}
+tbody td:first-child,thead th:first-child{
+  background:#F5F7F9;color:#8794A2;text-align:center;width:34px;font-size:11.5px;
+}
+.celula-verde{color:var(--ok);font-weight:600}
+.celula-cinza{color:#8794A2}
+
+.toast{
+  position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120%);
+  background:var(--navy-deep);color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;
+  box-shadow:0 10px 30px rgba(8,28,51,.3);z-index:200;transition:transform .22s ease;max-width:90vw;
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+.rodape{text-align:center;color:var(--aco);font-size:12.5px;padding:26px 16px 0;line-height:1.7}
+.rodape b{color:var(--navy)}
+
+@media (max-width:560px){
+  .hero h1{font-size:23px}
+  .barra-in{padding:10px 14px}
+  .abas{width:100%}
+  .abas button{flex:1;padding:8px 6px;font-size:12.5px}
+  .modal-acoes{grid-template-columns:1fr}
+  .dupla{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="aviso">Demonstração com dados fictícios — <b>Morecar Estética Automotiva</b></div>
+
+<header class="barra">
+  <div class="barra-in">
+    <div class="marca">
+      <svg width="30" height="34" viewBox="0 0 30 34" fill="none" aria-hidden="true">
+        <path d="M15 1.5 28 6v12.5C28 26 22.4 30.6 15 32.5 7.6 30.6 2 26 2 18.5V6L15 1.5Z" fill="#fff" stroke="#9FC3E8" stroke-width="1.2"/>
+        <circle cx="10.5" cy="13" r="2" fill="#0F2C4C"/><circle cx="15.5" cy="10.5" r="1.3" fill="#0F2C4C"/><circle cx="19" cy="13.5" r="1.6" fill="#0F2C4C"/>
+        <path d="M7.5 22.5h15v-3l-2.2-3.5H9.7L7.5 19.5v3Z" fill="#0F2C4C"/>
+        <circle cx="11" cy="23.5" r="1.7" fill="#fff" stroke="#0F2C4C" stroke-width="1.1"/>
+        <circle cx="19" cy="23.5" r="1.7" fill="#fff" stroke="#0F2C4C" stroke-width="1.1"/>
+      </svg>
+      <div class="marca-txt">Morecar<span>Estética Automotiva</span></div>
+    </div>
+    <nav class="abas" role="tablist">
+      <button class="on" data-vista="cliente" role="tab">Cliente</button>
+      <button data-vista="painel" role="tab">Painel do dono</button>
+      <button data-vista="planilha" role="tab">Planilha</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="vista on" id="v-cliente">
+  <div class="hero">
+    <h1>Agende a lavagem do seu veículo</h1>
+    <p>Escolha o serviço, o dia e o horário. A confirmação chega no seu WhatsApp na hora.</p>
+    <div class="hero-meta">
+      <div>Paraguassu 819<b>Andradina, SP</b></div>
+      <div>Seg a sáb<b>08:30 às 17:00</b></div>
+      <div>Desde<b>2019</b></div>
+    </div>
+  </div>
+
+  <div class="cartao puxado" id="fluxo">
+    <div class="passo">
+      <h3>1. Qual serviço você quer?</h3>
+      <p class="ajuda">Os preços já incluem produto e mão de obra.</p>
+      <div class="servicos" id="lista-servicos"></div>
+    </div>
+
+    <div class="passo">
+      <h3>2. Escolha o dia</h3>
+      <p class="ajuda">Domingo a loja não abre.</p>
+      <div class="dias" id="lista-dias"></div>
+    </div>
+
+    <div class="passo">
+      <h3>3. Escolha o horário</h3>
+      <p class="ajuda" id="ajuda-horario">Horários riscados já estão ocupados.</p>
+      <div class="horarios" id="lista-horarios"></div>
+    </div>
+
+    <div class="passo">
+      <h3>4. Seus dados</h3>
+      <div class="campo">
+        <label for="c-nome">Nome</label>
+        <input id="c-nome" placeholder="Como você quer ser chamado">
+      </div>
+      <div class="dupla">
+        <div class="campo">
+          <label for="c-fone">WhatsApp</label>
+          <input id="c-fone" placeholder="(18) 90000-0000" inputmode="tel">
+        </div>
+        <div class="campo">
+          <label for="c-veiculo">Veículo</label>
+          <input id="c-veiculo" placeholder="Ex: Onix prata">
+        </div>
+      </div>
+    </div>
+
+    <div class="resumo" id="resumo"></div>
+    <button class="btn" id="btn-agendar" disabled>Confirmar agendamento</button>
+  </div>
+
+  <div class="cartao puxado" id="recibo" style="display:none"></div>
+</section>
+
+<section class="vista" id="v-painel">
+  <div class="painel-topo">
+    <div>
+      <h2>Agenda do dia</h2>
+      <p>Você mexe aqui e o cliente já vê o horário atualizado.</p>
+    </div>
+    <button class="btn btn-p" id="btn-novo">Encaixar cliente</button>
+  </div>
+
+  <div class="dias" id="dias-painel" style="margin-bottom:16px"></div>
+  <div class="kpis" id="kpis"></div>
+
+  <div class="agenda">
+    <div class="agenda-cab">
+      <h3 id="titulo-agenda">Agenda</h3>
+      <button class="btn btn-2 btn-p" id="btn-bloquear">Bloquear um horário</button>
+    </div>
+    <div id="lista-agenda"></div>
+  </div>
+</section>
+
+<section class="vista" id="v-planilha">
+  <div class="planilha-nota">
+    <h3>Tudo cai numa planilha do Google</h3>
+    Cada agendamento vira uma linha automaticamente. Você abre pelo celular ou pelo computador, filtra por dia, soma o faturamento do mês e não precisa aprender sistema nenhum. Se um dia quiser trocar de ferramenta, os dados são seus e já estão prontos para exportar.
+  </div>
+  <div class="planilha">
+    <div class="planilha-cab">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="2" width="18" height="20" rx="2.5" fill="#17794C"/>
+        <path d="M7 8h10M7 12h10M7 16h10M12 8v8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <b>Agendamentos Morecar</b>
+        <span style="display:block">Sincronizado agora</span>
+      </div>
+    </div>
+    <div class="rolagem">
+      <table id="tabela-planilha"></table>
+    </div>
+  </div>
+</section>
+
+<p class="rodape">
+  Protótipo de demonstração feito por <b>JVSEKI DEV</b><br>
+  Nenhum dado desta tela é real e nada é enviado para ninguém.
+</p>
+
+</main>
+
+<div class="modal-fundo" id="modal-fundo">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const servicos = [
+  {id:'lav', nome:'Lavagem completa', desc:'Externa, interna, pneus e vidros', preco:90, min:90, ico:'carro'},
+  {id:'simples', nome:'Lavagem simples', desc:'Só a parte externa', preco:50, min:60, ico:'carro'},
+  {id:'moto', nome:'Lavagem de moto', desc:'Externa com secagem e pretinho', preco:45, min:60, ico:'moto'},
+  {id:'higien', nome:'Higienização interna', desc:'Bancos, carpete e teto', preco:180, min:180, ico:'brilho'},
+  {id:'polim', nome:'Polimento e vitrificação', desc:'Corte de riscos e proteção da pintura', preco:450, min:240, ico:'brilho'},
+  {id:'farol', nome:'Polimento de farol', desc:'Tira o amarelado e devolve o brilho', preco:80, min:60, ico:'farol'},
+  {id:'motor', nome:'Lavagem de motor', desc:'Limpeza do cofre com produto próprio', preco:70, min:60, ico:'motor'}
+];
+
+const icones = {
+  carro:'<path d="M4 15h14v-3l-2.4-4H6.4L4 12v3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="16.5" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="16.5" r="1.6" stroke="currentColor" stroke-width="1.6"/>',
+  moto:'<circle cx="5.5" cy="15" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="15" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 15h4l3-5h4M9 7h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  brilho:'<path d="M11 4l1.6 4.4L17 10l-4.4 1.6L11 16l-1.6-4.4L5 10l4.4-1.6L11 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M16.5 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8Z" fill="currentColor"/>',
+  farol:'<path d="M5 7h5a5 5 0 010 8H5V7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 8h4M14 11h5M14 14h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  motor:'<path d="M4 10h2l2-2h4v2h3l2 2h2v4h-3l-2 2H8l-2-2H4v-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+};
+
+const ABRE = 8.5, FECHA = 17, PASSO = 0.5;
+const hoje = new Date(); hoje.setHours(0,0,0,0);
+
+function iso(d){return d.toISOString().slice(0,10)}
+function maisDias(n){const d=new Date(hoje);d.setDate(d.getDate()+n);return d}
+function paraTexto(h){const hh=Math.floor(h);const mm=Math.round((h-hh)*60);return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')}
+function paraNum(t){const [a,b]=t.split(':').map(Number);return a+b/60}
+function dataBr(s){const [a,m,d]=s.split('-');return d+'/'+m}
+function dataLonga(s){
+  const [a,m,d]=s.split('-');
+  const dt=new Date(Number(a),Number(m)-1,Number(d));
+  const sem=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'][dt.getDay()];
+  return sem+', '+d+'/'+m;
+}
+function reais(v){return 'R$ '+v.toLocaleString('pt-BR')}
+function duracaoTexto(min){
+  if(min<60) return min+' min';
+  const h=Math.floor(min/60), r=min%60;
+  return h+'h'+(r?String(r).padStart(2,'0'):'');
+}
+function servicoPorId(id){return servicos.find(s=>s.id===id)}
+
+let agendamentos = [
+  {id:1, data:iso(hoje), hora:'09:00', cliente:'Rafael Nunes', fone:'(18) 99712-4408', veiculo:'Civic preto', servico:'lav', status:'confirmado'},
+  {id:2, data:iso(hoje), hora:'10:30', cliente:'Camila Souza', fone:'(18) 99184-2260', veiculo:'HB20 branco', servico:'higien', status:'confirmado'},
+  {id:3, data:iso(hoje), hora:'14:00', cliente:'Douglas Prado', fone:'(18) 99630-7715', veiculo:'CB 300 vermelha', servico:'moto', status:'confirmado'},
+  {id:4, data:iso(maisDias(1)), hora:'08:30', cliente:'Marina Alencar', fone:'(18) 99845-1173', veiculo:'Corolla prata', servico:'polim', status:'confirmado'},
+  {id:5, data:iso(maisDias(1)), hora:'15:00', cliente:'Tiago Ferraz', fone:'(18) 99277-8890', veiculo:'Strada branca', servico:'lav', status:'confirmado'},
+  {id:6, data:iso(maisDias(2)), hora:'11:00', cliente:'Elaine Martins', fone:'(18) 99506-3321', veiculo:'Kwid azul', servico:'farol', status:'confirmado'}
+];
+let proximoId = 7;
+
+let sel = {servico:null, data:null, hora:null};
+let dataPainel = iso(hoje);
+
+function abertoNoDia(dISO){
+  const [a,m,d]=dISO.split('-');
+  return new Date(Number(a),Number(m)-1,Number(d)).getDay() !== 0;
+}
+function todosSlots(){
+  const r=[];
+  for(let h=ABRE;h<FECHA;h+=PASSO) r.push(paraTexto(h));
+  return r;
+}
+function slotsOcupados(dISO, ignorarId){
+  const ocupados = new Set();
+  agendamentos.filter(a=>a.data===dISO && a.id!==ignorarId).forEach(a=>{
+    const dur = a.status==='bloqueio' ? 60 : servicoPorId(a.servico).min;
+    const ini = paraNum(a.hora);
+    for(let h=ini;h<ini+dur/60;h+=PASSO) ocupados.add(paraTexto(h));
+  });
+  return ocupados;
+}
+function cabeNoDia(dISO, hora, min, ignorarId){
+  const ocupados = slotsOcupados(dISO, ignorarId);
+  const ini = paraNum(hora);
+  if(ini + min/60 > FECHA) return false;
+  for(let h=ini;h<ini+min/60;h+=PASSO) if(ocupados.has(paraTexto(h))) return false;
+  return true;
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),2600);
+}
+
+document.querySelectorAll('.abas button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.abas button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.querySelectorAll('.vista').forEach(v=>v.classList.remove('on'));
+    document.getElementById('v-'+b.dataset.vista).classList.add('on');
+    window.scrollTo({top:0,behavior:'instant'});
+    if(b.dataset.vista==='painel') desenharPainel();
+    if(b.dataset.vista==='planilha') desenharPlanilha();
+  };
+});
+
+function desenharServicos(){
+  const box=document.getElementById('lista-servicos');
+  box.innerHTML='';
+  servicos.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='serv'+(sel.servico===s.id?' on':'');
+    b.innerHTML=`
+      <span class="serv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none">${icones[s.ico]}</svg></span>
+      <span>
+        <span class="serv-nome" style="display:block">${s.nome}</span>
+        <span class="serv-desc" style="display:block">${s.desc}</span>
+      </span>
+      <span class="serv-preco"><b>${reais(s.preco)}</b><span>${duracaoTexto(s.min)}</span></span>`;
+    b.onclick=()=>{sel.servico=s.id;sel.hora=null;desenharCliente()};
+    box.appendChild(b);
+  });
+}
+
+function desenharDias(alvo, atual, aoClicar){
+  const box=document.getElementById(alvo);
+  box.innerHTML='';
+  const nomes=['dom','seg','ter','qua','qui','sex','sáb'];
+  const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  for(let i=0;i<10;i++){
+    const d=maisDias(i), s=iso(d);
+    const b=document.createElement('button');
+    b.className='dia'+(atual===s?' on':'');
+    b.disabled=!abertoNoDia(s);
+    b.innerHTML=`<small>${nomes[d.getDay()]}</small><b>${String(d.getDate()).padStart(2,'0')}</b><i>${meses[d.getMonth()]}</i>`;
+    b.onclick=()=>aoClicar(s);
+    box.appendChild(b);
+  }
+}
+
+function desenharHorarios(){
+  const box=document.getElementById('lista-horarios');
+  const ajuda=document.getElementById('ajuda-horario');
+  box.innerHTML='';
+  if(!sel.servico){ajuda.textContent='Escolha um serviço primeiro para ver os horários livres.';return}
+  const s=servicoPorId(sel.servico);
+  ajuda.textContent='Este serviço leva '+duracaoTexto(s.min)+'. Horários riscados já estão ocupados.';
+  todosSlots().forEach(h=>{
+    const b=document.createElement('button');
+    b.className='hr'+(sel.hora===h?' on':'');
+    b.textContent=h;
+    b.disabled=!cabeNoDia(sel.data,h,s.min);
+    b.onclick=()=>{sel.hora=h;desenharCliente()};
+    box.appendChild(b);
+  });
+}
+
+function desenharResumo(){
+  const box=document.getElementById('resumo');
+  const btn=document.getElementById('btn-agendar');
+  const s=sel.servico?servicoPorId(sel.servico):null;
+  const nome=document.getElementById('c-nome').value.trim();
+  const fone=document.getElementById('c-fone').value.trim();
+  box.innerHTML=`
+    <div class="resumo-l"><span>Serviço</span><b>${s?s.nome:'—'}</b></div>
+    <div class="resumo-l"><span>Quando</span><b>${sel.hora?dataLonga(sel.data)+' às '+sel.hora:'—'}</b></div>
+    <div class="resumo-l"><span>Duração</span><b>${s?duracaoTexto(s.min):'—'}</b></div>
+    <div class="resumo-l resumo-total"><span>Valor</span><b>${s?reais(s.preco):'—'}</b></div>`;
+  btn.disabled=!(s && sel.hora && nome.length>1 && fone.length>7);
+}
+
+function desenharCliente(){
+  desenharServicos();
+  desenharDias('lista-dias',sel.data,d=>{sel.data=d;sel.hora=null;desenharCliente()});
+  desenharHorarios();
+  desenharResumo();
+}
+
+['c-nome','c-fone','c-veiculo'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',desenharResumo);
+});
+
+document.getElementById('btn-agendar').onclick=()=>{
+  const s=servicoPorId(sel.servico);
+  const novo={
+    id:proximoId++, data:sel.data, hora:sel.hora,
+    cliente:document.getElementById('c-nome').value.trim(),
+    fone:document.getElementById('c-fone').value.trim(),
+    veiculo:document.getElementById('c-veiculo').value.trim()||'Não informado',
+    servico:sel.servico, status:'confirmado'
+  };
+  agendamentos.push(novo);
+  mostrarRecibo(novo);
+  toast('Agendamento confirmado e enviado para a planilha');
+};
+
+function mostrarRecibo(a){
+  const s=servicoPorId(a.servico);
+  const prot='MRC-'+String(a.id).padStart(4,'0');
+  document.getElementById('fluxo').style.display='none';
+  const box=document.getElementById('recibo');
+  box.style.display='block';
+  box.innerHTML=`
+    <div class="confirmado">
+      <div class="selo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h2>Horário reservado</h2>
+      <p>${dataLonga(a.data)} às ${a.hora}, ${s.nome.toLowerCase()}.</p>
+      <div class="protocolo">${prot}</div>
+      <div class="zap">
+        <div class="zap-cab">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2Z"/></svg>
+          Mensagem enviada para ${a.fone}
+        </div>
+        <div class="balao">Oi ${a.cliente.split(' ')[0]}, aqui é da Morecar.
+
+Seu horário está confirmado:
+${s.nome} — ${dataLonga(a.data)} às ${a.hora}
+Veículo: ${a.veiculo}
+Valor: ${reais(s.preco)}
+
+Endereço: Paraguassu 819, Andradina.
+Se precisar remarcar é só responder aqui.</div>
+      </div>
+      <button class="btn btn-2" id="btn-voltar">Fazer outro agendamento</button>
+    </div>`;
+  document.getElementById('btn-voltar').onclick=()=>{
+    sel={servico:null,data:iso(hoje),hora:null};
+    ['c-nome','c-fone','c-veiculo'].forEach(id=>document.getElementById(id).value='');
+    box.style.display='none';
+    document.getElementById('fluxo').style.display='block';
+    desenharCliente();
+  };
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function desenharPainel(){
+  desenharDias('dias-painel',dataPainel,d=>{dataPainel=d;desenharPainel()});
+  const doDia=agendamentos.filter(a=>a.data===dataPainel).sort((a,b)=>paraNum(a.hora)-paraNum(b.hora));
+  const reais_=doDia.filter(a=>a.status!=='bloqueio').reduce((t,a)=>t+servicoPorId(a.servico).preco,0);
+  const ocupados=slotsOcupados(dataPainel);
+  const livres=todosSlots().filter(h=>!ocupados.has(h));
+
+  document.getElementById('kpis').innerHTML=`
+    <div class="kpi"><b>${doDia.filter(a=>a.status!=='bloqueio').length}</b><span>agendamentos no dia</span></div>
+    <div class="kpi"><b>${reais(reais_)}</b><span>previsto para receber</span></div>
+    <div class="kpi"><b>${livres.length>0?livres[0]:'—'}</b><span>próximo horário livre</span></div>`;
+
+  document.getElementById('titulo-agenda').textContent=dataLonga(dataPainel).charAt(0).toUpperCase()+dataLonga(dataPainel).slice(1);
+
+  const lista=document.getElementById('lista-agenda');
+  lista.innerHTML='';
+  if(!abertoNoDia(dataPainel)){lista.innerHTML='<div class="vazio">A loja não abre neste dia.</div>';return}
+  if(doDia.length===0){lista.innerHTML='<div class="vazio">Nenhum agendamento ainda. O dia está todo livre.</div>';return}
+
+  doDia.forEach(a=>{
+    const div=document.createElement('div');
+    div.className='linha-ag';
+    if(a.status==='bloqueio'){
+      div.innerHTML=`
+        <div class="hora-ag">${a.hora}<small>1h</small></div>
+        <div class="corpo-ag">
+          <div class="cliente-ag">Horário bloqueado<span class="tag t-bloq">bloqueio</span></div>
+          <div class="detalhe-ag">${a.cliente}</div>
+          <div class="acoes-ag"><button class="btn btn-p btn-2 btn-perigo" data-acao="remover" data-id="${a.id}">Liberar horário</button></div>
+        </div>`;
+    } else {
+      const s=servicoPorId(a.servico);
+      const tag=a.status==='concluido'?'<span class="tag t-feito">concluído</span>':'<span class="tag t-conf">confirmado</span>';
+      div.innerHTML=`
+        <div class="hora-ag">${a.hora}<small>${duracaoTexto(s.min)}</small></div>
+        <div class="corpo-ag">
+          <div class="cliente-ag">${a.cliente}${tag}</div>
+          <div class="detalhe-ag">${s.nome} · ${a.veiculo} · ${reais(s.preco)}</div>
+          <div class="detalhe-ag">${a.fone}</div>
+          <div class="acoes-ag">
+            <button class="btn btn-p btn-zap" data-acao="zap" data-id="${a.id}">Chamar no WhatsApp</button>
+            <button class="btn btn-p btn-2" data-acao="mudar" data-id="${a.id}">Mudar horário</button>
+            ${a.status!=='concluido'?`<button class="btn btn-p btn-2" data-acao="concluir" data-id="${a.id}">Marcar como feito</button>`:''}
+            <button class="btn btn-p btn-2 btn-perigo" data-acao="remover" data-id="${a.id}">Cancelar</button>
+          </div>
+        </div>`;
+    }
+    lista.appendChild(div);
+  });
+
+  lista.querySelectorAll('button[data-acao]').forEach(b=>{
+    b.onclick=()=>acaoPainel(b.dataset.acao, Number(b.dataset.id));
+  });
+}
+
+function abrirModal(html){
+  document.getElementById('modal').innerHTML=html;
+  document.getElementById('modal-fundo').classList.add('on');
+}
+function fecharModal(){document.getElementById('modal-fundo').classList.remove('on')}
+document.getElementById('modal-fundo').onclick=e=>{if(e.target.id==='modal-fundo')fecharModal()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')fecharModal()});
+
+function acaoPainel(acao,id){
+  const a=agendamentos.find(x=>x.id===id);
+  if(!a) return;
+
+  if(acao==='zap'){
+    toast('Abriria a conversa com '+a.cliente+' no WhatsApp');
+    return;
+  }
+  if(acao==='concluir'){
+    a.status='concluido';desenharPainel();toast('Serviço marcado como feito');return;
+  }
+  if(acao==='remover'){
+    const nome = a.status==='bloqueio' ? 'este bloqueio' : 'o horário de '+a.cliente;
+    abrirModal(`
+      <h3>Cancelar ${a.status==='bloqueio'?'bloqueio':'agendamento'}?</h3>
+      <p>Você vai liberar ${nome} às ${a.hora}. ${a.status==='bloqueio'?'':'O cliente recebe um aviso no WhatsApp.'}</p>
+      <div class="modal-acoes">
+        <button class="btn btn-2" id="m-nao">Voltar</button>
+        <button class="btn" id="m-sim" style="background:#B23A16">Cancelar mesmo</button>
+      </div>`);
+    document.getElementById('m-nao').onclick=fecharModal;
+    document.getElementById('m-sim').onclick=()=>{
+      agendamentos=agendamentos.filter(x=>x.id!==id);
+      fecharModal();desenharPainel();
+      toast(a.status==='bloqueio'?'Horário liberado':'Agendamento cancelado e horário liberado');
+    };
+    return;
+  }
+  if(acao==='mudar'){
+    const s=servicoPorId(a.servico);
+    const opcoes=todosSlots().filter(h=>cabeNoDia(a.data,h,s.min,a.id));
+    abrirModal(`
+      <h3>Mudar horário</h3>
+      <p>${a.cliente} · ${s.nome} · ${duracaoTexto(s.min)}</p>
+      <div class="campo">
+        <label for="m-dia">Dia</label>
+        <select id="m-dia">${[0,1,2,3,4,5,6,7,8,9].map(i=>{
+          const d=iso(maisDias(i));
+          if(!abertoNoDia(d)) return '';
+          return `<option value="${d}" ${d===a.data?'selected':''}>${dataLonga(d)}</option>`;
+        }).join('')}</select>
+      </div>
+      <div class="campo">
+        <label for="m-hora">Novo horário</label>
+        <select id="m-hora">${opcoes.map(h=>`<option value="${h}" ${h===a.hora?'selected':''}>${h}</option>`).join('')}</select>
+      </div>
+      <div class="modal-acoes">
+        <button class="btn btn-2" id="m-nao">Voltar</button>
+        <button class="btn" id="m-sim">Salvar mudança</button>
+      </div>`);
+    const selDia=document.getElementById('m-dia'), selHora=document.getElementById('m-hora');
+    selDia.onchange=()=>{
+      const livres=todosSlots().filter(h=>cabeNoDia(selDia.value,h,s.min,a.id));
+      selHora.innerHTML=livres.length?livres.map(h=>`<option value="${h}">${h}</option>`).join(''):'<option value="">Sem horário livre neste dia</option>';
+    };
+    document.getElementById('m-nao').onclick=fecharModal;
+    document.getElementById('m-sim').onclick=()=>{
+      if(!selHora.value){toast('Escolha um horário livre');return}
+      a.data=selDia.value;a.hora=selHora.value;
+      dataPainel=a.data;
+      fecharModal();desenharPainel();
+      toast('Horário alterado. O cliente foi avisado.');
+    };
+  }
+}
+
+document.getElementById('btn-novo').onclick=()=>{
+  abrirModal(`
+    <h3>Encaixar cliente</h3>
+    <p>Para quando alguém chega na loja ou liga pedindo horário.</p>
+    <div class="campo"><label for="n-nome">Nome</label><input id="n-nome" placeholder="Nome do cliente"></div>
+    <div class="dupla">
+      <div class="campo"><label for="n-fone">WhatsApp</label><input id="n-fone" placeholder="(18) 90000-0000"></div>
+      <div class="campo"><label for="n-veiculo">Veículo</label><input id="n-veiculo" placeholder="Ex: Gol branco"></div>
+    </div>
+    <div class="campo"><label for="n-serv">Serviço</label>
+      <select id="n-serv">${servicos.map(s=>`<option value="${s.id}">${s.nome} — ${reais(s.preco)}</option>`).join('')}</select>
+    </div>
+    <div class="dupla">
+      <div class="campo"><label for="n-dia">Dia</label>
+        <select id="n-dia">${[0,1,2,3,4,5,6,7,8,9].map(i=>{
+          const d=iso(maisDias(i));
+          if(!abertoNoDia(d)) return '';
+          return `<option value="${d}" ${d===dataPainel?'selected':''}>${dataLonga(d)}</option>`;
+        }).join('')}</select>
+      </div>
+      <div class="campo"><label for="n-hora">Horário</label><select id="n-hora"></select></div>
+    </div>
+    <div class="modal-acoes">
+      <button class="btn btn-2" id="m-nao">Voltar</button>
+      <button class="btn" id="m-sim">Salvar agendamento</button>
+    </div>`);
+
+  const sDia=document.getElementById('n-dia'), sHora=document.getElementById('n-hora'), sServ=document.getElementById('n-serv');
+  function atualizar(){
+    const s=servicoPorId(sServ.value);
+    const livres=todosSlots().filter(h=>cabeNoDia(sDia.value,h,s.min));
+    sHora.innerHTML=livres.length?livres.map(h=>`<option value="${h}">${h}</option>`).join(''):'<option value="">Sem horário livre</option>';
+  }
+  sDia.onchange=atualizar; sServ.onchange=atualizar; atualizar();
+
+  document.getElementById('m-nao').onclick=fecharModal;
+  document.getElementById('m-sim').onclick=()=>{
+    const nome=document.getElementById('n-nome').value.trim();
+    if(nome.length<2){toast('Escreva o nome do cliente');return}
+    if(!sHora.value){toast('Este dia não tem horário livre para esse serviço');return}
+    agendamentos.push({
+      id:proximoId++, data:sDia.value, hora:sHora.value, cliente:nome,
+      fone:document.getElementById('n-fone').value.trim()||'Não informado',
+      veiculo:document.getElementById('n-veiculo').value.trim()||'Não informado',
+      servico:sServ.value, status:'confirmado'
+    });
+    dataPainel=sDia.value;
+    fecharModal();desenharPainel();toast('Cliente encaixado na agenda');
+  };
+};
+
+document.getElementById('btn-bloquear').onclick=()=>{
+  const livres=todosSlots().filter(h=>!slotsOcupados(dataPainel).has(h));
+  abrirModal(`
+    <h3>Bloquear um horário</h3>
+    <p>Use quando você não vai poder atender: almoço, entrega de peça, médico.</p>
+    <div class="campo"><label for="b-hora">Horário</label>
+      <select id="b-hora">${livres.length?livres.map(h=>`<option value="${h}">${h}</option>`).join(''):'<option value="">Nenhum horário livre hoje</option>'}</select>
+    </div>
+    <div class="campo"><label for="b-motivo">Motivo</label><input id="b-motivo" placeholder="Ex: almoço"></div>
+    <div class="modal-acoes">
+      <button class="btn btn-2" id="m-nao">Voltar</button>
+      <button class="btn" id="m-sim">Bloquear</button>
+    </div>`);
+  document.getElementById('m-nao').onclick=fecharModal;
+  document.getElementById('m-sim').onclick=()=>{
+    const h=document.getElementById('b-hora').value;
+    if(!h){toast('Não há horário livre para bloquear');return}
+    agendamentos.push({
+      id:proximoId++, data:dataPainel, hora:h,
+      cliente:document.getElementById('b-motivo').value.trim()||'Sem motivo informado',
+      fone:'', veiculo:'', servico:null, status:'bloqueio'
+    });
+    fecharModal();desenharPainel();toast('Horário bloqueado. Ninguém consegue agendar nele.');
+  };
+};
+
+function desenharPlanilha(){
+  const linhas=[...agendamentos].sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora));
+  const cols=['Data','Hora','Cliente','WhatsApp','Veículo','Serviço','Valor','Status'];
+  let html='<thead><tr><th></th>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
+  linhas.forEach((a,i)=>{
+    const bloq=a.status==='bloqueio';
+    const s=bloq?null:servicoPorId(a.servico);
+    html+=`<tr>
+      <td>${i+1}</td>
+      <td>${dataBr(a.data)}</td>
+      <td>${a.hora}</td>
+      <td>${bloq?'<span class="celula-cinza">—</span>':a.cliente}</td>
+      <td>${bloq?'<span class="celula-cinza">—</span>':a.fone}</td>
+      <td>${bloq?'<span class="celula-cinza">—</span>':a.veiculo}</td>
+      <td>${bloq?'<span class="celula-cinza">Bloqueio: '+a.cliente+'</span>':s.nome}</td>
+      <td>${bloq?'<span class="celula-cinza">—</span>':reais(s.preco)}</td>
+      <td>${a.status==='concluido'?'<span class="celula-verde">Concluído</span>':(bloq?'<span class="celula-cinza">Bloqueio</span>':'Confirmado')}</td>
+    </tr>`;
+  });
+  html+='</tbody>';
+  document.getElementById('tabela-planilha').innerHTML=html;
+}
+
+sel.data=iso(hoje);
+if(!abertoNoDia(sel.data)) sel.data=iso(maisDias(1));
+dataPainel=sel.data;
+desenharCliente();
+</script>
+</body>
+</html>
